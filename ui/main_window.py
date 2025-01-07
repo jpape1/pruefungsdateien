@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import (
     QSpacerItem, QSizePolicy, QAction, QComboBox
 )
 from PyQt5.QtCore import Qt
+from PyQt5 import QtGui
 
 from config.config import Config
 from processors.file_processor import FileProcessor
@@ -28,7 +29,8 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         # Set window properties
-        self.setWindowTitle("Prüfungsdateien Hochladen")
+        self.setWindowTitle("Prüfungsdateien hochladen")
+        self.setWindowIcon(QtGui.QIcon('resources/icon.ico'))
         self.setGeometry(150, 150, 1000, 800)
 
         # Initialize UI components

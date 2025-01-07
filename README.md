@@ -63,7 +63,7 @@ Folgende Voraussetzungen müssen erfüllt sein:
 Klonen Sie das Repository durch folgenden Befehl auf Ihr System:
 
 ```bash
-git clone https://github.com/jpape1/Pruefungsdateien.git
+git clone https://github.com/jpape1/pruefungsdateien.git
 ```
 
 Navigieren Sie anschließend in das geklonte Verzeichnis:
@@ -122,6 +122,11 @@ Mit **PyInstaller** können für die gängigen Betriebssysteme ausführbare Date
 
    ```bash
    pyinstaller --onefile --windowed --icon=resources/icon.ico --name=Prüfungsdateien main.py
+   ```
+
+   ⚠️ **Hinweis**: Falls der Windows Defender die Ausführung der Datei blockiert, liegt das daran, dass unsignierte .exe-Dateien mit integriertem Python Interpreter häufig (fälschlicherweise) als Virus kategorisiert werden. In diesem Fall muss die .exe-Datei ohne die Option `--onefile` kompiliert werden. Das führt allerdings dazu, dass die Datei anschließend nur innerhalb des erzeugten `dist/`-Ordners verwendet werden kann, da sie auf zusätzlich Dateien in diesem Verzeichnis angewiesen ist.
+   ```bash
+   pyinstaller --windowed --icon=resources/icon.ico --name=Prüfungsdateien main.py
    ```
 
 2. **Ausführbare Datei finden:**
