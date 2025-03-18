@@ -1,182 +1,95 @@
-# ui/main_window.py
-
-from PyQt5.QtWidgets import (
-    QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QMessageBox, QFileDialog,
-    QSpacerItem, QSizePolicy, QAction, QComboBox
+from PyQt6.QtWidgets import (
+    QMainWindow, QWidget, QHBoxLayout, QVBoxLayout, QStackedWidget
 )
-from PyQt5.QtCore import Qt
-from PyQt5 import QtGui
+from PyQt6.QtGui import QIcon
 
-from config.config import Config
-from processors.file_processor import FileProcessor
+# Import UI components and pages
+from ui.components.sidebar import Sidebar
+from ui.components.settings_section import SettingsSection
+from ui.components.status_bar import CustomStatusBar
 
-from .components.header import Header
-from .components.filters import FiltersSection
-from .components.drag_drop import DragDropSection
-from .components.log_section import LogSection
-from .components.status_bar import CustomStatusBar
-
+from ui.pages.upload_page import UploadPage
+from ui.pages.settings_page import SettingsPage
+from ui.pages.about_page import AboutPage
 
 class MainWindow(QMainWindow):
     """
-    Main window
+    The main window of the application with sidebar, stacked pages, and status bar.
     """
-
-    def __init__(self):
-        """
-        Initializes the main window, sets up UI components and layout
-        """
+    def __init__(self) -> None:
         super().__init__()
+        # Set up basic window properties (title, icon, geometry)
+        self._setup_window_properties()
+        # Initialize UI components such as sidebar, pages, and status bar
+        self._init_ui_components()
+        # Apply the custom stylesheet for visual styling
+        self._apply_stylesheet()
 
-        # Set window properties
-        self.setWindowTitle("Prüfungsdateien hochladen")
-        self.setWindowIcon(QtGui.QIcon('resources/icon.ico'))
-        self.setGeometry(150, 150, 1000, 800)
+    def _setup_window_properties(self) -> None:
+        """
+        Configure the window's title, icon, and size/position.
+        """
+        self.setWindowTitle("IHK Prüfungsdateien")
+        self.setWindowIcon(QIcon("resources/icon.png"))
+        self.setGeometry(150, 150, 1400, 900)
 
-        # Initialize UI components
-        self.create_menu()
-        self.header = Header()
-        self.filters_section = FiltersSection()
-        self.drag_drop_section = DragDropSection(self.open_file_dialog)
-        self.log_section = LogSection()
+    def _init_ui_components(self) -> None:
+        """
+        Initialize UI components and set up the layout of the main window.
+        """
+        # Create the sidebar component with the current window as parent
+        self.sidebar = Sidebar(self)
+        # Initialize the stacked pages used for different sections
+        self._init_stacked_pages()
+
+        # Create and set a custom status bar at the bottom of the window
         self.status_bar = CustomStatusBar()
         self.setStatusBar(self.status_bar)
-        self.create_file_processor()
-        self.apply_stylesheet()
 
-        # Set the central widget layout
-        self.init_layout()
-
-    def init_layout(self):
-        """
-        Sets up main layout of the central widget
-        """
+        # Create the main widget and layout: sidebar on the left, content on the right
         main_widget = QWidget()
-        main_layout = QVBoxLayout()
+        main_layout = QHBoxLayout()
         main_layout.setContentsMargins(0, 0, 0, 0)
-        main_layout.setSpacing(10)
+        main_layout.addWidget(self.sidebar, stretch=1)
 
-        # Add Header
-        main_layout.addWidget(self.header)
-
-        # Add Spacer
-        main_layout.addSpacerItem(QSpacerItem(20, 20, QSizePolicy.Minimum, QSizePolicy.Fixed))
-
-        # Add Filters
-        filters_container = QWidget()
-        filters_container_layout = QHBoxLayout()
-        filters_container_layout.addStretch()
-        filters_container_layout.addWidget(self.filters_section)
-        filters_container_layout.addStretch()
-        filters_container.setLayout(filters_container_layout)
-
-        main_layout.addWidget(filters_container)
-        main_layout.addSpacerItem(QSpacerItem(20, 30, QSizePolicy.Minimum, QSizePolicy.Fixed))
-
-        # Add Drag & Drop Section
-        main_layout.addWidget(self.drag_drop_section, stretch=4)
-        main_layout.addSpacerItem(QSpacerItem(20, 20, QSizePolicy.Minimum, QSizePolicy.Fixed))
-
-        # Add Log Section
-        main_layout.addWidget(self.log_section, stretch=1)
+        # Create a vertical layout for the content (stacked pages) with padding
+        content_layout = QVBoxLayout()
+        content_layout.setContentsMargins(20, 20, 20, 20)
+        content_layout.addWidget(self.stacked_widget)
+        main_layout.addLayout(content_layout, stretch=4)
 
         main_widget.setLayout(main_layout)
         self.setCentralWidget(main_widget)
 
-    def create_menu(self):
+        # Connect sidebar buttons to switch between pages in the stacked widget
+        self.sidebar.btn_upload.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(0))
+        self.sidebar.btn_settings.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(1))
+        self.sidebar.btn_about.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(2))
+
+    def _init_stacked_pages(self) -> None:
         """
-        Creates the menu bar with File and Help menus
+        Initialize and add the different pages to the stacked widget.
         """
-        menu_bar = self.menuBar()
+        self.settings_section = SettingsSection()
+        self.upload_page = UploadPage(self.settings_section)
+        self.settings_page = SettingsPage(self.settings_section)
+        self.about_page = AboutPage()
 
-        # File menu
-        file_menu = menu_bar.addMenu("Datei")
+        # Create a QStackedWidget to manage multiple pages
+        self.stacked_widget = QStackedWidget()
+        self.stacked_widget.addWidget(self.upload_page)   # Index 0
+        self.stacked_widget.addWidget(self.settings_page)   # Index 1
+        self.stacked_widget.addWidget(self.about_page)      # Index 2
 
-        # Open file action
-        open_action = QAction("Datei öffnen...", self)
-        open_action.setShortcut("Ctrl+O")
-        open_action.triggered.connect(self.open_file_dialog)
-        file_menu.addAction(open_action)
-
-        # Exit action
-        exit_action = QAction("Beenden", self)
-        exit_action.setShortcut("Ctrl+Q")
-        exit_action.triggered.connect(self.close)
-        file_menu.addAction(exit_action)
-
-        # Help menu
-        help_menu = menu_bar.addMenu("Hilfe")
-
-        # About action
-        about_action = QAction("Über", self)
-        about_action.triggered.connect(self.show_about_dialog)
-        help_menu.addAction(about_action)
-
-    def create_file_processor(self):
+    def _apply_stylesheet(self) -> None:
         """
-        Initializes FileProcessor instance and connects its signals
-        """
-        self.file_processor = FileProcessor()
-        self.file_processor.progress.connect(self.drag_drop_section.update_progress)
-        self.file_processor.log.connect(self.log_section.append_log)
-        self.file_processor.finished.connect(self.on_processing_finished)
-
-    def apply_stylesheet(self):
-        """
-        Applies stylesheet to the main window
+        Apply a custom stylesheet to the main window to adjust visual appearance.
         """
         self.setStyleSheet("""
             QMainWindow {
-                background-color: #ecf0f1;
+                background-color: #f0f2f5;
+            }
+            QPushButton {
+                transition: all 0.2s ease-in-out;
             }
         """)
-
-    def open_file_dialog(self, file_path=None):
-        """
-        Opens a file dialog to allow the user to select a single file or handles a dropped file
-
-        Args:
-            file_path (str, optional): Path to the file to be processed
-        """
-        if not file_path:
-            options = QFileDialog.Options()
-            file_path, _ = QFileDialog.getOpenFileName(
-                self,
-                "Datei auswählen",
-                "",
-                "Alle Dateien (*);;PDF-Dateien (*.pdf);;Word-Dokumente (*.docx)",
-                options=options
-            )
-        
-        if file_path:
-            # Show progress bar
-            self.drag_drop_section.show_progress()
-
-            # Retrieve current filter values
-            specializations = self.filters_section.findChild(QComboBox, "fachrichtung_combo").currentText()
-            exam_parts = self.filters_section.findChild(QComboBox, "pruefungsteil_combo").currentText()
-            file_types = self.filters_section.findChild(QComboBox, "dateityp_combo").currentText()
-            year = self.filters_section.findChild(QComboBox, "jahr_combo").currentText()
-            period = self.filters_section.findChild(QComboBox, "zeitraum_combo").currentText()
-
-            # Pass filter values to the FileProcessor
-            self.file_processor.process_file(file_path, specializations, exam_parts, file_types, year, period)
-
-
-    def show_about_dialog(self):
-        """
-        Displays About dialog with application information
-        """
-        about_text = (
-            "<h2>Prüfungsdateien automatisiert umbenennen und sortieren</h2>"
-            "<p>Diese Anwendung ermöglicht das automatische Umbenennen und Sortieren von Prüfungsdateien.</p>"
-            "<p>Version 1.0</p>"
-            "<p>Entwickelt von Jonas Pape</p>"
-        )
-        QMessageBox.about(self, "Über", about_text)
-
-    def on_processing_finished(self):
-        """
-        Slot that is called when file processing is completed
-        """
-        self.status_bar.update_status("Verarbeitung abgeschlossen.", 5000)
