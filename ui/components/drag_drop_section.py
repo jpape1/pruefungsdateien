@@ -1,27 +1,26 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QFrame, QLabel, QPushButton, QProgressBar, QMessageBox
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QFrame, QLabel, QPushButton, QMessageBox
 from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt
 
 class DragDropSection(QWidget):
-    def __init__(self, upload_callback):
+    def __init__(self, upload_callback) -> None:
         """
-        Initializes the drag and drop section widget.
-        :param upload_callback: Callback function to trigger file upload.
+        Initializes the drag and drop section widget
+        :param upload_callback: Callback function to trigger file upload
         """
         super().__init__()
         self.upload_callback = upload_callback
         self.init_ui()
         self.setAcceptDrops(True)
 
-    def init_ui(self):
+    def init_ui(self) -> None:
         """
-        Sets up the user interface components.
+        Sets up the user interface components
         """
         layout = QVBoxLayout()
         layout.setContentsMargins(10, 10, 10, 10)
         layout.setSpacing(15)
 
-        # Create the drop area styled as a card
         self.drop_frame = QFrame()
         self.drop_frame.setObjectName("DropFrame")
         self.drop_frame.setFixedHeight(250)
@@ -34,72 +33,19 @@ class DragDropSection(QWidget):
         drop_layout.addStretch()
         self.drop_frame.setLayout(drop_layout)
 
-        # Create the upload button
         self.upload_button = QPushButton("Datei wählen")
         self.upload_button.setFixedSize(220, 50)
         self.upload_button.setFont(QFont("Segoe UI", 14))
         self.upload_button.clicked.connect(self.upload_callback)
 
-        # Create the progress bar
-        self.progress_bar = QProgressBar()
-        self.progress_bar.setFixedHeight(25)
-        self.progress_bar.setValue(0)
-        self.progress_bar.setVisible(False)
-
         layout.addWidget(self.drop_frame)
         layout.addWidget(self.upload_button, alignment=Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(self.progress_bar)
         self.setLayout(layout)
 
-        self.setStyleSheet("""
-            #DropFrame {
-                border: 2px dashed #16a085;
-                border-radius: 15px;
-                background-color: #ffffff;
-                color: #333333;
-            }
-            QPushButton {
-                background-color: #16a085;
-                color: #ffffff;
-                border: none;
-                border-radius: 25px;
-            }
-            QPushButton:hover {
-                background-color: #1abc9c;
-            }
-            QLabel {
-                color: #333333;
-            }
-            QProgressBar {
-                border: 1px solid #16a085;
-                border-radius: 12px;
-                text-align: center;
-                background-color: #e0e0e0;
-            }
-            QProgressBar::chunk {
-                background-color: #1abc9c;
-                border-radius: 12px;
-            }
-        """)
-
-    def update_progress(self, value):
+    def dragEnterEvent(self, event) -> None:
         """
-        Updates the progress bar with the given value.
-        :param value: Integer progress percentage.
+        Handle drag&drop enter event
         """
-        self.progress_bar.setValue(value)
-        if value >= 100:
-            self.progress_bar.setVisible(False)
-
-    def show_progress(self):
-        """
-        Displays the progress bar and resets its value.
-        """
-        self.progress_bar.setVisible(True)
-        self.progress_bar.setValue(0)
-
-    # Drag & Drop Event Handlers
-    def dragEnterEvent(self, event):
         if event.mimeData().hasUrls() and len(event.mimeData().urls()) == 1:
             event.acceptProposedAction()
             self.drop_frame.setStyleSheet("""
@@ -112,7 +58,10 @@ class DragDropSection(QWidget):
         else:
             event.ignore()
 
-    def dragLeaveEvent(self, event):
+    def dragLeaveEvent(self, event) -> None:
+        """
+        Handle drag&drop leave event
+        """
         self.drop_frame.setStyleSheet("""
             #DropFrame {
                 border: 2px dashed #16a085;
@@ -121,7 +70,10 @@ class DragDropSection(QWidget):
             }
         """)
 
-    def dropEvent(self, event):
+    def dropEvent(self, event) -> None:
+        """
+        Handle drag&drop drop event
+        """
         if event.mimeData().hasUrls():
             urls = event.mimeData().urls()
             if len(urls) != 1:
@@ -130,7 +82,6 @@ class DragDropSection(QWidget):
                 return
             file_path = urls[0].toLocalFile()
             if file_path:
-                self.show_progress()
                 self.upload_callback(file_path)
             self.drop_frame.setStyleSheet("""
                 #DropFrame {

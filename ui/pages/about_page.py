@@ -1,21 +1,21 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPixmap
+from config.config import Config
 
 class AboutPage(QWidget):
     def __init__(self):
         super().__init__()
         self.init_ui()
 
-    def init_ui(self):
+    def init_ui(self) -> None:
         """
-        Shows the about page with application information.
+        Shows the about page with application information
         """
         layout = QVBoxLayout()
         layout.setContentsMargins(40, 40, 40, 40)
         layout.setSpacing(20)
 
-        # Display logo at the top
         logo_label = QLabel()
         pixmap = QPixmap("resources/icon.png")
         if not pixmap.isNull():
@@ -23,18 +23,16 @@ class AboutPage(QWidget):
         logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(logo_label)
 
-        # Header label
         header_label = QLabel("Über diese Anwendung")
         header_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         header_label.setStyleSheet("font: bold 20pt 'Segoe UI'; color: #222222;")
         layout.addWidget(header_label)
 
-        # Detailed description text
         description_text = (
             "IHK Prüfungsdateien\n"
-            "Version 2.0\n"
-            "Entwickelt von Jonas Pape\n\n"
-            "Diese Anwendung legt Prüfungsdateien strukturiert und geordnet ab."
+            "Version " + Config.get_version() + "\n"
+            "Verantwortlich: Gruppe 17 / Jonas Pape\n\n"
+            "Diese Anwendung dient zum geordneten Ablegen von Prüfungsdokumenten."
         )
         description_label = QLabel(description_text)
         description_label.setWordWrap(True)

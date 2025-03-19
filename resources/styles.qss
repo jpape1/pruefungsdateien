@@ -1,0 +1,76 @@
+QGroupBox {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 15px;
+}
+
+QGroupBox QLabel {
+    color: black;               
+}
+
+QComboBox {
+    padding: 5px 10px;
+    border: 1px solid #dcdcdc;
+    background-color: white;
+    color: black;
+}
+
+QComboBox::drop-down {
+    width: 20px;
+    background-color: white;
+}
+
+QComboBox QAbstractItemView {
+    background-color: white;
+    color: #333333;
+}
+
+
+#DropFrame {
+    border: 2px dashed #16a085;
+    border-radius: 15px;
+    background-color: #ffffff;
+    color: #333333;
+}
+            
+QPushButton {
+    background-color: #16a085;
+    color: #ffffff;
+    border: none;
+    border-radius: 25px;
+}
+            
+QPushButton:hover {
+    background-color: #1abc9c;
+}
+
+QLabel {
+    color: #333333;
+}
+
+#Sidebar {
+    background-color: #e0e0e0;
+}
+
+QPushButton#navBtn {
+    background-color: transparent;
+    border: none;
+    font: 12pt "Segoe UI";
+    text-align: left;
+    padding: 10px;
+    border-radius: 8px;
+    color: black;
+}
+
+QPushButton#navBtn:hover {
+    background-color: #d0e2ff;
+}
+
+QPushButton#navBtn[class="active"] {
+    background-color: #a4c8ff;
+    font-weight: bold;
+}
+
+QMainWindow {
+    background-color: #f0f2f5;
+}

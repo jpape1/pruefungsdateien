@@ -1,6 +1,6 @@
 # Prüfungsdateien hochladen
 
-**Prüfungsdateien hochladen** ist eine benutzerfreundliche Desktop-Anwendung, die das automatische Umbenennen und Sortieren von Prüfungsdateien ermöglicht.
+**Prüfungsdateien hochladen** ist eine Desktop-Anwendung, die das geordnete Umbenennen und Sortieren von Prüfungsdateien ermöglicht.
 
 ## Inhaltsverzeichnis
 
@@ -29,21 +29,22 @@
 
 - **Drag & Drop:** Einfaches Ziehen und Ablegen von Dateien in die Anwendung.
 - **Filteroptionen:** Fachrichtung, Prüfungsteil, Dateityp, Jahr und Zeitraum festlegen.
-- **Prozessfortschritt:** Fortschrittsbalken zur Anzeige des Verarbeitungsstatus.
-- **Log-Ausgabe:** Echtzeit-Logging zur Nachvollziehbarkeit der durchgeführten Aktionen.
-- **Statusleiste:** Anzeige von Statusmeldungen.
 - **Benutzerfreundliches Design:** Simples und intuitives Design.
 
 ## Demo
 
-![Anwendungsoberfläche](resources/demo.png)
+![Anwendungsoberfläche](resources/demo1.png)
 
 *Screenshot der Hauptoberfläche.*
+
+![Einstellungs-Seite](resources/demo2.png)
+
+*Screenshot der Einstellungs-Seite.*
 
 ## Technologien
 
 - **Programmiersprache:** Python 3.12.3
-- **GUI-Framework:** PyQt5
+- **GUI-Framework:** PyQt6
 - **Packaging:** PyInstaller
 - **Weitere verwendete Bibliotheken:** os, sys, datetime
 
@@ -51,22 +52,22 @@
 
 Folgende Voraussetzungen müssen erfüllt sein:
 
-- **Python 3.6 oder höher**
+- **Python 3.9 oder höher**
 - **pip** (Python-Paketmanager)
 - **Git** (für das Klonen des Repositorys)
-- **PyQt5** (wird durch `requirements.txt` installiert)
+- **PyQt6** (wird durch `requirements.txt` installiert)
 
 ## Installation
 
 ### 1. Repository klonen
 
-Klonen Sie das Repository durch folgenden Befehl auf Ihr System:
+Klonen Sie das Repository auf Ihr System:
 
 ```bash
 git clone https://github.com/jpape1/pruefungsdateien.git
 ```
 
-Navigieren Sie anschließend in das geklonte Verzeichnis:
+Navigieren Sie anschließend ins Verzeichnis:
 
 ```bash
 cd pruefungsdateien
@@ -98,7 +99,7 @@ Virtuelle Umgebung aktivieren:
 
 ### 3. Abhängigkeiten installieren
 
-Benötigten Pakete mit `pip` installieren:
+Benötigte Pakete mit `pip` installieren:
 
 ```bash
 pip install -r requirements.txt
@@ -114,7 +115,7 @@ python main.py
 
 ## Erstellung von ausführbaren Dateien
 
-Mit **PyInstaller** können für die gängigen Betriebssysteme ausführbare Dateien erstellt werden:
+Mit **PyInstaller** können für die gängigsten Betriebssysteme ausführbare Dateien erstellt werden:
 
 ### Für Windows
 
@@ -163,18 +164,23 @@ Mit **PyInstaller** können für die gängigen Betriebssysteme ausführbare Date
 pruefungsdateien-hochladen/
 ├── config/
 │   └── config.py
-├── processors/
+├── core/
 │   └── file_processor.py
 ├── resources/
 │   ├── icon.ico
-│   └── demo.png
+│   ├── icon.png
+│   ├── styles.qss
+│   ├── demo1.png
+│   └── demo2.png
 ├── ui/
 │   ├── components/
-│   │   ├── drag_drop.py
-│   │   ├── filters.py
-│   │   ├── header.py
-│   │   ├── log_section.py
-│   │   └── status_bar.py
+│   │   ├── drag_drop_section.py
+│   │   ├── settings_section.py
+│   │   └── sidebar.py
+│   ├── pages/
+│   │   ├── about_page.py
+│   │   ├── settings_page.py
+│   │   └── upload_page.py
 │   └── main_window.py
 ├── main.py
 ├── requirements.txt
