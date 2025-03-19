@@ -122,7 +122,7 @@ Mit **PyInstaller** können für die gängigsten Betriebssysteme ausführbare Da
 1. **Erstellen Sie die ausführbare Datei:**
 
    ```bash
-   pyinstaller --onefile --windowed --icon=resources/icon.ico --name=Prüfungsdateien main.py
+   pyinstaller --onefile --windowed --icon=resources/icon.ico --name=Prüfungsdateien --add-data "resources;resources" main.py
    ```
 
    ⚠️ **Hinweis**: Falls der Windows Defender die Ausführung der Datei blockiert, liegt das daran, dass unsignierte .exe-Dateien mit integriertem Python Interpreter häufig (fälschlicherweise) als Virus kategorisiert werden. In diesem Fall muss die .exe-Datei ohne die Option `--onefile` kompiliert werden. Das führt allerdings dazu, dass die Datei anschließend nur innerhalb des erzeugten `dist/`-Ordners verwendet werden kann, da sie auf zusätzlich Dateien in diesem Verzeichnis angewiesen ist.
@@ -139,7 +139,7 @@ Mit **PyInstaller** können für die gängigsten Betriebssysteme ausführbare Da
 1. **Erstellen Sie die ausführbare Datei:**
 
    ```bash
-   pyinstaller --onefile --windowed --name=Prüfungsdateien main.py
+   pyinstaller --onefile --windowed --name=Prüfungsdateien --add-data "resources:resources" main.py
    ```
 
 2. **Ausführbare Datei finden:**
@@ -151,7 +151,7 @@ Mit **PyInstaller** können für die gängigsten Betriebssysteme ausführbare Da
 1. **Erstellen Sie die ausführbare Datei:**
 
    ```bash
-   pyinstaller --onefile --windowed --name=Prüfungsdateien main.py
+   pyinstaller --onefile --windowed --name=Prüfungsdateien --add-data "resources:resources" main.py
    ```
 
 2. **Ausführbare Datei finden:**
